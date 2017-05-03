@@ -1,3 +1,6 @@
+﻿/************************************************************************/
+/* Removing duplicate Bookmarks from exported chrome bookmarks          */
+/************************************************************************/
 
 using System.Collections.Generic;
 using System.Linq;
