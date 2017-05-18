@@ -1,4 +1,5 @@
 ﻿/************************************************************************/
+//18-May-2017
 /* Removing duplicate Bookmarks from exported chrome bookmarks          */
 /************************************************************************/
 
@@ -14,7 +15,7 @@ namespace bookmarksSorter
         static void Main(string[] args)
         {
             if (args.Length != 2)
-                return;
+               return;
 
             XDocument xmlDocument;
             var xmlStream = new System.IO.StreamReader(args[0]);
