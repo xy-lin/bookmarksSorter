@@ -22,7 +22,7 @@ namespace bookmarksSorter
             // Remove useless elements and change:
             // "=" -> ";"
             // "&" -> ":"       
-
+            
             try
             {
                 xmlDocument = XDocument.Load(xmlStream);
