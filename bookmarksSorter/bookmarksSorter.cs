@@ -4,6 +4,7 @@
 /* Removing duplicate Bookmarks from exported chrome bookmarks          */
 /************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -24,34 +25,49 @@ namespace bookmarksSorter
             // Remove useless elements and change:
             // "=" -> ";"
             // "&" -> ":"       
-            
+            // "HREF;" -> "HREF=" 
+            // "ADD_DATE;" -> "ADD_DATE="
+
             try
             {
                 xmlDocument = XDocument.Load(xmlStream);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return;
-            }            
+            }
 
-            IEnumerable<XAttribute> links = xmlDocument.Descendants("A").Attributes("HREF");
-            HashSet<string> uniqLinks = new HashSet<string>();
+            var links = xmlDocument.Descendants("A");
+            // IEnumerable<XElement> links = xmlDocument.Descendants("href");
+            Dictionary<string, XElement> uniqLinks = new Dictionary<string, XElement>();
 
             Debug.WriteLine(links.Count());
-            foreach (XAttribute link in links)
+
+            foreach (var link in links)
             {
-                uniqLinks.Add(link.Value);
+                var xAttribute = link.Attribute("HREF");
+                if (xAttribute == null)
+                    return;
+
+                uniqLinks[xAttribute.Value] = link;
             }
 
-            XDocument newDoc = new XDocument();
-            newDoc.Add(new XElement("root"));
+            var list = uniqLinks.Keys.ToList();
+            list.Sort();
 
-            foreach (string link in uniqLinks)
+            var newDoc = new XDocument();
+            newDoc.Add(new XElement("root"));
+            var xElement = newDoc.Element("root");
+            if (xElement == null)
+                return;
+            
+            foreach (var link in list)
             {
                 Debug.Write("\r", link);
-                newDoc.Element("root").Add(new XElement("href", link));
+                
+                xElement.Add(uniqLinks[link]);
             }
-
 
             newDoc.Save(args[1]);
 
